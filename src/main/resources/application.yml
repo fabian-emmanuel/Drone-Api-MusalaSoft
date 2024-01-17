@@ -1,0 +1,14 @@
+server:
+  port: 9000
+  error:
+    include-message: always
+
+spring:
+  webflux:
+    base-path: /api/v1
+  data:
+    mongodb:
+      uri: ${MONGODB_URL:mongodb://localhost:27017/drones-db?retryWrites=true&w=majority}
+      auto-index-creation: true
+
+event-schedule-rate: 600_000 #10 MINUTES

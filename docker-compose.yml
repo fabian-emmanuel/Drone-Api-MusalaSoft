@@ -1,0 +1,32 @@
+version: "3"
+services:
+
+  mongo:
+    image: 'mongo'
+    ports:
+      - "27017:27017"
+    container_name: mongo
+    volumes:
+      - ./data/db:/data/db
+    networks:
+      - shared-net
+
+  java:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    container_name: drones
+    image: 'drones:latest'
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    networks:
+      - shared-net
+
+
+networks:
+  shared-net:
+    driver: bridge
