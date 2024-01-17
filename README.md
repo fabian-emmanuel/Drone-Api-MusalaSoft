@@ -28,7 +28,7 @@ To Run The Application, Ensure You Have The Following:
 You can clone the project using the following link:
 
 ```bash
-git clone https://github.com/fabian-emmanuel/Drone-Api-MusalaSoft.git
+git clone https://gitlab.com/emmanuel.fabian.dev/drone-api-musalasoft.git
 ```
 #### Build And Run The Application
 Navigate to the project's root directory and execute the following commands:
