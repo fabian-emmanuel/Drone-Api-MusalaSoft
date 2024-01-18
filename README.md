@@ -45,11 +45,13 @@ docker-compose up        # Run the project using Docker
 ```
 
 #### Accessing The Documentations
-- [Swagger Documentation](http://localhost:9000/api/v1/webjars/swagger-ui/index.html) `Application Runs On Port: 9000`
+- [Swagger Documentation](http://localhost:9000/api/v1/webjars/swagger-ui/index.html)
 - [Postman Documentation](https://documenter.getpostman.com/view/32364986/2s9YsQ8qDv)
 
 
 ### NOTES
-For ease of use and testing, the database has been preloaded with test data. 
-Detailed endpoint documentation is available on the SwaggerUI and Postman Doc [Links Provided Above]. 
+`Application Runs On Port: 9000, with base-path: api/v1, Hence it is accessed via http://localhost:9000/api/v1/**`
+
+For ease of use and testing, the database has been preloaded with test data.
+Detailed endpoint documentation is available on the SwaggerUI and Postman Doc [Links Provided Above].
 After running the application, you can explore the documentation and test the endpoints accordingly.
