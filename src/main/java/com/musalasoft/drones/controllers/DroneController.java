@@ -57,4 +57,12 @@ public class DroneController {
         return droneService.retrieveDroneBatteryLevel(droneId)
                 .map(batteryLevelResponseDTO -> new BaseResponse<>(true, HttpStatus.OK, Message.DRONE_BATTERY_LEVEL_RETRIEVED_SUCCESSFULLY, batteryLevelResponseDTO));
     }
+
+    @GetMapping
+    public Mono<BaseResponse<?>> retrieveAllDrones(){
+
+        return droneService.retrieveAllDrones()
+                .collectList()
+                .map(droneResponseDTOList -> new BaseResponse<>(true, HttpStatus.OK, Message.DRONE_RETRIEVED_SUCCESSFULLY, droneResponseDTOList));
+    }
 }

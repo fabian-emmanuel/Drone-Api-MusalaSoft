@@ -6,6 +6,7 @@ import com.musalasoft.drones.services.DroneService;
 import com.musalasoft.drones.services.EventLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import reactor.core.publisher.Mono;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Mono;
 @EnableScheduling
 @Configuration
 @RequiredArgsConstructor
+@Profile("!test")
 public class EventLogJob {
 
     private final DroneService droneService;

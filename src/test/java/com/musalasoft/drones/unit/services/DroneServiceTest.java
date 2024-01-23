@@ -17,8 +17,13 @@ import com.musalasoft.drones.repositories.DroneRepository;
 import com.musalasoft.drones.services.MedicationService;
 import com.musalasoft.drones.services.impl.DroneServiceImpl;
 import com.musalasoft.drones.utils.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -38,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 @ExtendWith(SpringExtension.class)
 class DroneServiceTest {
     @InjectMocks
@@ -46,6 +52,8 @@ class DroneServiceTest {
     DroneRepository droneRepository;
     @Mock
     MedicationService medicationService;
+    @Captor
+    ArgumentCaptor<DroneRequestDTO> droneRequestCaptor;
 
     @Test
     void shouldRegisterDroneSuccessfully() {
@@ -332,40 +340,28 @@ class DroneServiceTest {
         verify(medicationService, times(2)).retrieveAllMedicationsByIdIn(anySet());
     }
 
-    @Test
-    void shouldRetrieveDronesByStateSuccessfully(){
+    @ParameterizedTest
+    @EnumSource(State.class)
+    void shouldRetrieveDronesByStateSuccessfully(State state) {
 
-        Drone drone1 = TestModels.drone("D-001", 30.0, 50);
-        drone1.setState(State.IDLE);
+        Drone drone = TestModels.drone("D-001", 30.0, 50);
+        drone.setState(state);
 
-        Drone drone2 = TestModels.drone("D-002", 80.0, 70);
-        drone2.setState(State.LOADING);
-
-        Drone drone3 = TestModels.drone("D-003", 80.0, 70);
-        drone3.setState(State.LOADED);
-
-        Drone drone4 = TestModels.drone("D-004", 80.0, 20);
-        drone4.setState(State.IDLE);
-
-        when(droneRepository.findAllByStateIs(any(State.class))).thenReturn(Flux.just(drone1, drone4));
+        when(droneRepository.findAllByStateIs(state)).thenReturn(Flux.just(drone));
         when(medicationService.retrieveAllMedicationsByIdIn(anySet())).thenReturn(Mono.just(Collections.emptyList()));
 
-        DroneResponseDTO expectedDroneResponseDTO1 = DroneMapper.mapToDroneResponseDTO(drone1, Collections.emptyList());
-        DroneResponseDTO expectedDroneResponseDTO2 = DroneMapper.mapToDroneResponseDTO(drone4, Collections.emptyList());
+        DroneResponseDTO expectedDroneResponseDTO = DroneMapper.mapToDroneResponseDTO(drone, Collections.emptyList());
 
-        StepVerifier.create(droneService.retrieveDronesByState(State.IDLE.name()))
+        StepVerifier.create(droneService.retrieveDronesByState(state.name()))
                 .expectNextMatches(response -> {
-                    assertEquals(2, response.size());
-                    assertEquals(expectedDroneResponseDTO1, response.getFirst());
-                    assertEquals(expectedDroneResponseDTO2, response.getLast());
+                    assertEquals(1, response.size());
+                    assertEquals(expectedDroneResponseDTO, response.getFirst());
                     return true;
                 })
                 .verifyComplete();
 
-        verify(droneRepository, times(1)).findAllByStateIs(any(State.class));
-        verify(medicationService, times(2)).retrieveAllMedicationsByIdIn(anySet());
-
-
+        verify(droneRepository, times(1)).findAllByStateIs(state);
+        verify(medicationService, times(1)).retrieveAllMedicationsByIdIn(anySet());
     }
 
     @Test
